@@ -1,0 +1,24 @@
+# Makefile.win32 for MSVC (NMake)
+# Usage: Open "x86 Native Tools Command Prompt", then:
+#   nmake -f Makefile.win32
+
+CC = cl
+LIB = lib
+CFLAGS = /c /nologo /W3 /O2
+LIBFLAGS = /nologo
+TARGET = CgeMath.lib
+
+SOURCES = Box2f.c Box3f.c Line.c Mat3f.c Mat4f.c Misc.c Plane.c Quat4f.c \
+    Ray2f.c Ray3f.c Vec2f.c Vec2i.c Vec3f.c Vec3i.c Vec4f.c Vec4i.c
+OBJECTS = $(SOURCES:.c=.obj)
+
+$(TARGET): $(OBJECTS)
+	$(LIB) $(LIBFLAGS) /OUT:$(TARGET) $(OBJECTS)
+
+{.}.c{}.obj:
+	$(CC) $(CFLAGS) /Fo$@ $<
+
+clean:
+	del $(OBJECTS) $(TARGET) 2>nul
+
+.PHONY: clean

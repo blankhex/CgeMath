@@ -1,0 +1,24 @@
+# MinGW Makefile for CgeMath
+
+CC = gcc
+AR = ar
+CFLAGS = -std=c99 -O2 -Wall -Wextra
+ARFLAGS = rcs
+TARGET = libCgeMath.a
+
+SOURCES = Box2f.c Box3f.c Line.c Mat3f.c Mat4f.c Misc.c Plane.c Quat4f.c \
+    Ray2f.c Ray3f.c Vec2f.c Vec2i.c Vec3f.c Vec3i.c Vec4f.c Vec4i.c
+OBJECTS = $(SOURCES:.c=.o)
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(AR) $(ARFLAGS) $@ $^
+
+%.o: %.c CgeMath.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	del $(OBJECTS) $(TARGET) 2>nul || exit 0
