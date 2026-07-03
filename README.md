@@ -51,6 +51,13 @@ int main() {
 }
 ```
 
+Checkout the `examples` folder to look at an example of the raytracer using
+this library.
+
+Here is an example of its output:
+
+![Example output](examples/demo.png)
+
 ## Portability
 
 - Written in C89 + stdint.h

@@ -135,13 +135,6 @@ int CgeRay3fIntersectBox3f(const float aStart[3], const float aDirection[3],
     timeNear = -1.0f / 0.0f;
     timeFar  =  1.0f / 0.0f;
 
-    /* Check if origin inside box */
-    if (CgeBox3fContains(bMin, bMax, aStart)) {
-        memcpy(out, aStart, sizeof(float) * 3);
-        *t = 0.0f;
-        return 1;
-    }
-
     /* Check each axis for the minimal and maximum intersection time */
     for (i = 0; i < 3; i++) {
         if (fabsf(aDirection[i]) < EPSILON) {
@@ -191,5 +184,60 @@ int CgeSegment3fIntersectBox3f(const float aStart[3], const float aEnd[3],
         return 0;
 
     *t = time;
+    return 1;
+}
+
+int CgeRay3fIntersectSphere(const float start[3], const float direction[3],
+                            const float center[3], float radius, float *t,
+                            float out[3])
+{
+    float v[3], tmp[3];
+    float tCa, d2, th, t1, t2;
+
+    CgeVec3fSub(center, start, v);
+    tCa = CgeVec3fDot(v, direction);
+    d2 = CgeVec3fDot(v, v) - tCa * tCa;
+
+    if (d2 > radius * radius)
+        return 0;
+
+    th = (float)sqrt(radius * radius - d2);
+    t1 = tCa - th;
+    t2 = tCa + th;
+
+    if (t2 < EPSILON) return 0;
+
+    *t = (t1 > EPSILON) ? t1 : t2;
+    CgeVec3fScale(direction, *t, tmp);
+    CgeVec3fAdd(start, tmp, out);
+
+    return 1;
+}
+
+int CgeSegment3fIntersectSphere(const float start[3], const float end[3],
+                                const float center[3], float radius, float *t,
+                                float out[3]) {
+    float dir[3], lenSq, len;
+    float norm[3];
+
+    CgeVec3fSub(end, start, dir);
+    lenSq = CgeVec3fDot(dir, dir);
+
+    if (lenSq == 0.0f)
+        return 0;
+
+    len = (float)sqrt(lenSq);
+    CgeVec3fScale(dir, 1.0f / len, norm);
+
+    if (!CgeRay3fIntersectSphere(start, norm, center, radius, t, out)) {
+        return 0;
+    }
+
+    *t = *t / len;
+    if (*t > len)
+        return 0;
+
+    CgeVec3fScale(dir, *t, out);
+    CgeVec3fAdd(start, out, out);
     return 1;
 }

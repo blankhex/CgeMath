@@ -106,3 +106,24 @@ void CgeVec4fBarycentric(const float a[4], const float b[4], const float c[4],
     SET_ROW(tmp1, v); CgeVec4fMulAdd(b, tmp1, tmp2, tmp2);
     SET_ROW(tmp1, w); CgeVec4fMulAdd(c, tmp1, tmp2, out);
 }
+
+float CgeVec4fDistance(const float a[4], const float b[4]) {
+    float tmp[4];
+
+    CgeVec4fSub(a, b, tmp);
+    return CgeVec4fLength(tmp);
+}
+
+void CgeVec4fClamp(const float in[4], float minVal, float maxVal, float out[4]) {
+    out[0] = in[0] < minVal ? minVal : (in[0] > maxVal ? maxVal : in[0]);
+    out[1] = in[1] < minVal ? minVal : (in[1] > maxVal ? maxVal : in[1]);
+    out[2] = in[2] < minVal ? minVal : (in[2] > maxVal ? maxVal : in[2]);
+    out[3] = in[3] < minVal ? minVal : (in[3] > maxVal ? maxVal : in[3]);
+}
+
+void CgeVec4fAbs(const float in[4], float out[4]) {
+    out[0] = in[0] < 0 ? -in[0] : in[0];
+    out[1] = in[1] < 0 ? -in[1] : in[1];
+    out[2] = in[2] < 0 ? -in[2] : in[2];
+    out[3] = in[3] < 0 ? -in[3] : in[3];
+}

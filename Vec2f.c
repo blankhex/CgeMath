@@ -93,3 +93,46 @@ void CgeVec2fBarycentric(const float a[2], const float b[2], const float c[2],
     SET_ROW(tmp1, v); CgeVec2fMulAdd(b, tmp1, tmp2, tmp2);
     SET_ROW(tmp1, w); CgeVec2fMulAdd(c, tmp1, tmp2, out);
 }
+
+float CgeVec2fDistance(const float a[2], const float b[2]) {
+    float tmp[2];
+
+    CgeVec2fSub(a, b, tmp);
+    return CgeVec2fLength(tmp);
+}
+
+void CgeVec2fReflect(const float in[2], const float norm[2], float out[2]) {
+    float tmp[2];
+    float dot;
+
+    dot = CgeVec2fDot(in, norm);
+    CgeVec2fScale(norm, 2.0f * dot, tmp);
+    CgeVec2fSub(in, tmp, out);
+}
+
+void CgeVec2fRefract(const float in[2], const float norm[2], float eta,
+                     float out[2]) {
+    float tmp1[2], tmp2[2];
+    float nDotI, k;
+
+    nDotI = CgeVec2fDot(norm, in);
+    k = 1.0f - eta * eta * (1.0f - nDotI * nDotI);
+    if (k < 0.0f) {
+        out[0] = out[1] = 0.0f;
+        return;
+    }
+
+    CgeVec2fScale(norm, eta * nDotI + (float)sqrt(k), tmp1);
+    CgeVec2fScale(in, eta, tmp2);
+    CgeVec2fSub(tmp2, tmp1, out);
+}
+
+void CgeVec2fClamp(const float in[2], float minVal, float maxVal, float out[2]) {
+    out[0] = in[0] < minVal ? minVal : (in[0] > maxVal ? maxVal : in[0]);
+    out[1] = in[1] < minVal ? minVal : (in[1] > maxVal ? maxVal : in[1]);
+}
+
+void CgeVec2fAbs(const float in[2], float out[2]) {
+    out[0] = in[0] < 0 ? -in[0] : in[0];
+    out[1] = in[1] < 0 ? -in[1] : in[1];
+}

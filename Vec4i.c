@@ -56,3 +56,17 @@ void CgeVec4iMax(const int a[4], const int b[4], int out[4]) {
     if (a[2] > b[2]) out[2] = a[2]; else out[2] = b[2];
     if (a[3] > b[3]) out[3] = a[3]; else out[3] = b[3];
 }
+
+void CgeVec4iClamp(const int in[4], int minVal, int maxVal, int out[4]) {
+    out[0] = in[0] < minVal ? minVal : (in[0] > maxVal ? maxVal : in[0]);
+    out[1] = in[1] < minVal ? minVal : (in[1] > maxVal ? maxVal : in[1]);
+    out[2] = in[2] < minVal ? minVal : (in[2] > maxVal ? maxVal : in[2]);
+    out[3] = in[3] < minVal ? minVal : (in[3] > maxVal ? maxVal : in[3]);
+}
+
+void CgeVec4iAbs(const int in[4], int out[4]) {
+    out[0] = in[0] < 0 ? -in[0] : in[0];
+    out[1] = in[1] < 0 ? -in[1] : in[1];
+    out[2] = in[2] < 0 ? -in[2] : in[2];
+    out[3] = in[3] < 0 ? -in[3] : in[3];
+}

@@ -134,13 +134,6 @@ int CgeRay2fIntersectBox2f(const float aStart[2], const float aDirection[2],
     timeNear = -1.0f / 0.0f;
     timeFar  =  1.0f / 0.0f;
 
-    /* Check if origin inside box */
-    if (CgeBox2fContains(bMin, bMax, aStart)) {
-        memcpy(out, aStart, sizeof(float) * 2);
-        *t = 0.0f;
-        return 1;
-    }
-
     /* Check each axis for the minimal and maximum intersection time */
     for (i = 0; i < 2; i++) {
         if (fabsf(aDirection[i]) < EPSILON) {
@@ -189,5 +182,60 @@ int CgeSegment2fIntersectBox2f(const float aStart[2], const float aEnd[2],
         return 0;
 
     *t = time;
+    return 1;
+}
+
+int CgeRay2fIntersectCircle(const float start[2], const float direction[2],
+                            const float center[2], float radius, float *t,
+                            float out[2])
+{
+    float v[2], tmp[2];
+    float tCa, d2, th, t1, t2;
+
+    CgeVec2fSub(center, start, v);
+    tCa = CgeVec2fDot(v, direction);
+    d2 = CgeVec2fDot(v, v) - tCa * tCa;
+
+    if (d2 > radius * radius)
+        return 0;
+
+    th = (float)sqrt(radius * radius - d2);
+    t1 = tCa - th;
+    t2 = tCa + th;
+
+    if (t2 < EPSILON) return 0;
+
+    *t = (t1 > EPSILON) ? t1 : t2;
+    CgeVec2fScale(direction, *t, tmp);
+    CgeVec2fAdd(start, tmp, out);
+
+    return 1;
+}
+
+int CgeSegment2fIntersectCircle(const float start[2], const float end[2],
+                                const float center[2], float radius, float *t,
+                                float out[2]) {
+    float dir[2], lenSq, len;
+    float norm[2];
+
+    CgeVec2fSub(end, start, dir);
+    lenSq = CgeVec2fDot(dir, dir);
+
+    if (lenSq == 0.0f)
+        return 0;
+
+    len = (float)sqrt(lenSq);
+    CgeVec2fScale(dir, 1.0f / len, norm);
+
+    if (!CgeRay2fIntersectCircle(start, norm, center, radius, t, out)) {
+        return 0;
+    }
+
+    *t = *t / len;
+    if (*t > len)
+        return 0;
+
+    CgeVec2fScale(dir, *t, out);
+    CgeVec2fAdd(start, out, out);
     return 1;
 }

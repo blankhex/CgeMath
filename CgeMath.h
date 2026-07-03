@@ -126,6 +126,12 @@ int CgeRay2fIntersectBox2f(const float aStart[2], const float aDirection[2],
 int CgeSegment2fIntersectBox2f(const float aStart[2], const float aEnd[2],
                                const float bMin[2], const float bMax[2],
                                float *t, float out[2]);
+int CgeRay2fIntersectCircle(const float start[2], const float direction[2],
+                            const float center[2], float radius, float *t,
+                            float out[2]);
+int CgeSegment2fIntersectCircle(const float start[2], const float end[2],
+                                const float center[2], float radius, float *t,
+                                float out[2]);
 
 int CgeRay3fIntersectPlane(const float start[3], const float direction[3],
                            const float plane[4], float *t, float out[3]);
@@ -143,6 +149,12 @@ int CgeRay3fIntersectBox3f(const float aStart[3], const float aDirection[3],
 int CgeSegment3fIntersectBox3f(const float aStart[3], const float aEnd[3],
                                const float bMin[3], const float bMax[3],
                                float *t, float out[3]);
+int CgeRay3fIntersectSphere(const float start[3], const float direction[3],
+                            const float center[3], float radius, float *t,
+                            float out[3]);
+int CgeSegment3fIntersectSphere(const float start[3], const float end[3],
+                                const float center[3], float radius, float *t,
+                                float out[3]);
 
 void CgeVec2fAdd(const float a[2], const float b[2], float out[2]);
 void CgeVec2fSub(const float a[2], const float b[2], float out[2]);
@@ -162,6 +174,12 @@ void CgeVec2fLerp(const float a[2], const float b[2], float t, float out[2]);
 void CgeVec2fProject(const float a[2], const float b[2], float out[2]);
 void CgeVec2fBarycentric(const float a[2], const float b[2], const float c[2],
                          float v, float w, float out[2]);
+float CgeVec2fDistance(const float a[2], const float b[2]);
+void CgeVec2fReflect(const float in[2], const float norm[2], float out[2]);
+void CgeVec2fRefract(const float in[2], const float norm[2], float eta,
+                     float out[2]);
+void CgeVec2fClamp(const float in[2], float minVal, float maxVal, float out[2]);
+void CgeVec2fAbs(const float in[2], float out[2]);
 
 void CgeVec2iAdd(const int a[2], const int b[2], int out[2]);
 void CgeVec2iSub(const int a[2], const int b[2], int out[2]);
@@ -171,6 +189,8 @@ void CgeVec2iMulAdd(const int a[2], const int b[2], const int c[2], int out[2]);
 void CgeVec2iNegate(const int in[2], int out[2]);
 void CgeVec2iMin(const int a[2], const int b[2], int out[2]);
 void CgeVec2iMax(const int a[2], const int b[2], int out[2]);
+void CgeVec2iClamp(const int in[2], int minVal, int maxVal, int out[2]);
+void CgeVec2iAbs(const int in[2], int out[2]);
 
 void CgeVec3fAdd(const float a[3], const float b[3], float out[3]);
 void CgeVec3fSub(const float a[3], const float b[3], float out[3]);
@@ -190,6 +210,12 @@ void CgeVec3fLerp(const float a[3], const float b[3], float t, float out[3]);
 void CgeVec3fProject(const float a[3], const float b[3], float out[3]);
 void CgeVec3fBarycentric(const float a[3], const float b[3], const float c[3],
                          float v, float w, float out[3]);
+float CgeVec3fDistance(const float a[3], const float b[3]);
+void CgeVec3fReflect(const float in[3], const float norm[3], float out[3]);
+void CgeVec3fRefract(const float in[3], const float norm[3], float eta,
+                     float out[3]);
+void CgeVec3fClamp(const float in[3], float minVal, float maxVal, float out[3]);
+void CgeVec3fAbs(const float in[3], float out[3]);
 
 void CgeVec3iAdd(const int a[3], const int b[3], int out[3]);
 void CgeVec3iSub(const int a[3], const int b[3], int out[3]);
@@ -199,6 +225,8 @@ void CgeVec3iMulAdd(const int a[3], const int b[3], const int c[3], int out[3]);
 void CgeVec3iNegate(const int in[3], int out[3]);
 void CgeVec3iMin(const int a[3], const int b[3], int out[3]);
 void CgeVec3iMax(const int a[3], const int b[3], int out[3]);
+void CgeVec3iClamp(const int in[3], int minVal, int maxVal, int out[3]);
+void CgeVec3iAbs(const int in[3], int out[3]);
 
 void CgeVec4fAdd(const float a[4], const float b[4], float out[4]);
 void CgeVec4fSub(const float a[4], const float b[4], float out[4]);
@@ -217,6 +245,9 @@ void CgeVec4fLerp(const float a[4], const float b[4], float t, float out[4]);
 void CgeVec4fProject(const float a[4], const float b[4], float out[4]);
 void CgeVec4fBarycentric(const float a[4], const float b[4], const float c[4],
                          float v, float w, float out[4]);
+float CgeVec4fDistance(const float a[4], const float b[4]);
+void CgeVec4fClamp(const float in[4], float minVal, float maxVal, float out[4]);
+void CgeVec4fAbs(const float in[4], float out[4]);
 
 void CgeVec4iAdd(const int a[4], const int b[4], int out[4]);
 void CgeVec4iSub(const int a[4], const int b[4], int out[4]);
@@ -226,5 +257,7 @@ void CgeVec4iMulAdd(const int a[4], const int b[4], const int c[4], int out[4]);
 void CgeVec4iNegate(const int in[4], int out[4]);
 void CgeVec4iMin(const int a[4], const int b[4], int out[4]);
 void CgeVec4iMax(const int a[4], const int b[4], int out[4]);
+void CgeVec4iClamp(const int in[4], int minVal, int maxVal, int out[4]);
+void CgeVec4iAbs(const int in[4], int out[4]);
 
 #endif /* CGE_MATH_H */
