@@ -33,11 +33,11 @@ int CgeRay3fIntersectTriangle(const float start[3], const float direction[3],
     float time;
 
     /* Compute plane */
-    if (CgePlaneFromPoints(a, b, c, plane))
+    if (!CgePlaneFromPoints(a, b, c, plane))
         return 0;
 
     /* Compute intersection point in ray against plane */
-    if (CgeRay3fIntersectPlane(start, direction, plane, &time, tmp3))
+    if (!CgeRay3fIntersectPlane(start, direction, plane, &time, tmp3))
         return 0;
 
     /* Check if point inside rectangle */
@@ -94,11 +94,11 @@ int CgeSegment3fIntersectTriangle(const float start[3], const float end[3],
     float time;
 
     /* Compute plane */
-    if (CgePlaneFromPoints(a, b, c, plane))
+    if (!CgePlaneFromPoints(a, b, c, plane))
         return 0;
 
     /* Compute intersection point in ray against plane */
-    if (CgeSegment3fIntersectPlane(start, end, plane, &time, tmp3))
+    if (!CgeSegment3fIntersectPlane(start, end, plane, &time, tmp3))
         return 0;
 
     /* Check if point inside rectangle */
@@ -136,7 +136,7 @@ int CgeRay3fIntersectBox3f(const float aStart[3], const float aDirection[3],
     timeFar  =  1.0f / 0.0f;
 
     /* Check if origin inside box */
-    if (!CgeBox3fContains(bMin, bMax, aStart)) {
+    if (CgeBox3fContains(bMin, bMax, aStart)) {
         memcpy(out, aStart, sizeof(float) * 3);
         *t = 0.0f;
         return 1;
@@ -184,7 +184,7 @@ int CgeSegment3fIntersectBox3f(const float aStart[3], const float aEnd[3],
     float time;
 
     CgeVec3fSub(aEnd, aStart, tmp);
-    if (CgeRay3fIntersectBox3f(aStart, tmp, bMin, bMax, &time, out))
+    if (!CgeRay3fIntersectBox3f(aStart, tmp, bMin, bMax, &time, out))
         return 0;
 
     if (time > 1.0f)

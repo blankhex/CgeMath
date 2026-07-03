@@ -53,7 +53,7 @@ int CgeRay2fIntersectRay(const float aStart[2], const float aDirection[2],
     float tmp[2];
     float time1, time2;
 
-    if (CgeRay2fIntersectTime(aStart, aDirection, bStart, bDirection, &time1, &time2))
+    if (!CgeRay2fIntersectTime(aStart, aDirection, bStart, bDirection, &time1, &time2))
         return 0;
 
     if (time1 < 0.0f || time2 < 0.0f)
@@ -72,7 +72,7 @@ int CgeRay2fIntersectSegment(const float aStart[2], const float aDirection[2],
     float time1, time2;
 
     CgeVec2fSub(bEnd, bStart, tmp);
-    if (CgeRay2fIntersectTime(aStart, aDirection, bStart, tmp, &time1, &time2))
+    if (!CgeRay2fIntersectTime(aStart, aDirection, bStart, tmp, &time1, &time2))
         return 0;
 
     if (time1 < 0.0f || time2 < 0.0f || time2 > 1.0f)
@@ -113,7 +113,7 @@ int CgeSegment2fIntersectSegment(const float aStart[2], const float aEnd[2],
 
     CgeVec2fSub(aEnd, aStart, tmp1);
     CgeVec2fSub(bEnd, bStart, tmp2);
-    if (CgeRay2fIntersectTime(aStart, tmp1, bStart, tmp2, &time1, &time2))
+    if (!CgeRay2fIntersectTime(aStart, tmp1, bStart, tmp2, &time1, &time2))
         return 0;
 
     if (time1 < 0.0f || time1 > 1.0f || time2 < 0.0f || time2 > 1.0f)
@@ -135,7 +135,7 @@ int CgeRay2fIntersectBox2f(const float aStart[2], const float aDirection[2],
     timeFar  =  1.0f / 0.0f;
 
     /* Check if origin inside box */
-    if (!CgeBox2fContains(bMin, bMax, aStart)) {
+    if (CgeBox2fContains(bMin, bMax, aStart)) {
         memcpy(out, aStart, sizeof(float) * 2);
         *t = 0.0f;
         return 1;
@@ -182,7 +182,7 @@ int CgeSegment2fIntersectBox2f(const float aStart[2], const float aEnd[2],
     float time;
 
     CgeVec2fSub(aEnd, aStart, tmp);
-    if (CgeRay2fIntersectBox2f(aStart, tmp, bMin, bMax, &time, out))
+    if (!CgeRay2fIntersectBox2f(aStart, tmp, bMin, bMax, &time, out))
         return 0;
 
     if (time > 1.0f)
