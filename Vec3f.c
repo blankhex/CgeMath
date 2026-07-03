@@ -132,7 +132,7 @@ void CgeVec3fRefract(const float in[3], const float norm[3], float eta,
     nDotI = CgeVec3fDot(norm, in);
     k = 1.0f - eta * eta * (1.0f - nDotI * nDotI);
     if (k < 0.0f) {
-        out[0] = out[1] = 0.0f;
+        out[0] = out[1] = out[2] = 0.0f;
         return;
     }
 
