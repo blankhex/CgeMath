@@ -22,20 +22,20 @@ typedef struct {
     float specular;
 } Sphere;
 
-static const float gRed[3] = {1.0f, 0.0f, 0.0f};
-static const float gGreen[3] = {0.0f, 1.0f, 0.0f};
-static const float gBlue[3] = {0.0f, 0.0f, 1.0f};
+static const float red[3] = {1.0f, 0.0f, 0.0f};
+static const float green[3] = {0.0f, 1.0f, 0.0f};
+static const float blue[3] = {0.0f, 0.0f, 1.0f};
 
-static const Sphere gSpheres[] = {
-    {{-2.0f, 0.0f, -5.0f}, 1.0f, gRed, 0.1f, 20.0f, 0.5f},
-    {{ 0.0f, 2.0f, -4.0f}, 1.0f, gGreen, 0.5f, 50.0f, 0.8f},
-    {{ 2.0f, 0.0f, -5.0f}, 1.0f, gBlue, 0.95f, 100.0f, 1.0f}
+static const Sphere spheres[] = {
+    {{-2.0f, 0.0f, -5.0f}, 1.0f, red, 0.1f, 20.0f, 0.5f},
+    {{ 0.0f, 2.0f, -4.0f}, 1.0f, green, 0.5f, 50.0f, 0.8f},
+    {{ 2.0f, 0.0f, -5.0f}, 1.0f, blue, 0.95f, 100.0f, 1.0f}
 };
 
-static const int gNumSpheres = 3;
-static const float gLightPos[3] = {0.0f, 3.0f, -2.0f};
-static const float gAmbient = 0.2f;
-static const float gOrigin[3] = {0.0f, 0.5f, 0.0f};
+static const int numSpheres = 3;
+static const float lightPos[3] = {0.0f, 3.0f, -2.0f};
+static const float ambient = 0.2f;
+static const float origin[3] = {0.0f, 0.5f, 0.0f};
 
 int traceRay(const float origin[3], const float direction[3], float *t,
              int *hitIndex, float hitPoint[3], float normal[3]) {
@@ -46,22 +46,22 @@ int traceRay(const float origin[3], const float direction[3], float *t,
     closest = 1e10f;
     hit = -1;
 
-    for (i = 0; i < gNumSpheres; i++) {
-        if (CgeRay3fIntersectSphere(origin, direction, gSpheres[i].center, gSpheres[i].radius, &t0, p) == 1) {
+    for (i = 0; i < numSpheres; i++) {
+        if (CgeRay3fIntersectSphere(origin, direction, spheres[i].center, spheres[i].radius, &t0, p) == 1) {
             if (t0 > 0.001f && t0 < closest) {
                 closest = t0;
                 hit = i;
-                CgeVec3fSub(p, gSpheres[i].center, normal);
+                CgeVec3fSub(p, spheres[i].center, normal);
                 CgeVec3fNormal(normal, normal);
             }
         }
     }
 
     if (direction[1] != 0.0f) {
-        float t_plane;
-        t_plane = (-1.0f - origin[1]) / direction[1];
-        if (t_plane > 0.001f && t_plane < closest) {
-            closest = t_plane;
+        float tPlane;
+        tPlane = (-1.0f - origin[1]) / direction[1];
+        if (tPlane > 0.001f && tPlane < closest) {
+            closest = tPlane;
             hit = -2;
         }
     }
@@ -78,7 +78,7 @@ int traceRay(const float origin[3], const float direction[3], float *t,
     hitPoint[2] = origin[2] + closest * direction[2];
 
     if (hit >= 0) {
-        CgeVec3fSub(hitPoint, gSpheres[hit].center, normal);
+        CgeVec3fSub(hitPoint, spheres[hit].center, normal);
         CgeVec3fNormal(normal, normal);
     } else if (hit == -2) {
         normal[0] = 0.0f; normal[1] = 1.0f; normal[2] = 0.0f;
@@ -103,12 +103,12 @@ void traceColor(const float origin[3], const float direction[3], float color[3],
     }
 
     if (traceRay(origin, direction, &t, &hitIndex, hitPoint, normal) >= 0) {
-        CgeVec3fSub(gLightPos, hitPoint, toLight);
+        CgeVec3fSub(lightPos, hitPoint, toLight);
         CgeVec3fNormal(toLight, lightDir);
 
         shadow = 1.0f;
         if (traceRay(hitPoint, lightDir, &tShadow, &dummyIdx, dummyPoint, dummyNormal) >= 0) {
-            float lightDist = CgeVec3fDistance(gLightPos, hitPoint);
+            float lightDist = CgeVec3fDistance(lightPos, hitPoint);
             if (tShadow < lightDist) {
                 shadow = 0.0f;
             }
@@ -119,7 +119,7 @@ void traceColor(const float origin[3], const float direction[3], float color[3],
 
         specular = 0.0f;
         if (hitIndex >= 0 && NdotL > 0.0f) {
-            CgeVec3fSub(gOrigin, hitPoint, viewDir);
+            CgeVec3fSub(origin, hitPoint, viewDir);
             CgeVec3fNormal(viewDir, viewDir);
 
             CgeVec3fAdd(viewDir, lightDir, halfVec);
@@ -127,11 +127,11 @@ void traceColor(const float origin[3], const float direction[3], float color[3],
 
             NdotH = CgeVec3fDot(normal, halfVec);
             if (NdotH > 0.0f) {
-                specular = powf(NdotH, gSpheres[hitIndex].shininess) * gSpheres[hitIndex].specular;
+                specular = powf(NdotH, spheres[hitIndex].shininess) * spheres[hitIndex].specular;
             }
         }
 
-        brightness = gAmbient + diffuse * shadow + specular * shadow;
+        brightness = ambient + diffuse * shadow + specular * shadow;
 
         if (hitIndex == -2) {
             ix = (int)floorf(hitPoint[0]);
@@ -139,13 +139,13 @@ void traceColor(const float origin[3], const float direction[3], float color[3],
             tile = ((ix + iz) % 2 == 0) ? 1.0f : 0.3f;
             localColor[0] = localColor[1] = localColor[2] = tile * brightness;
         } else {
-            surf = gSpheres[hitIndex].color;
+            surf = spheres[hitIndex].color;
             localColor[0] = surf[0] * brightness;
             localColor[1] = surf[1] * brightness;
             localColor[2] = surf[2] * brightness;
         }
 
-        reflectivity = (hitIndex >= 0) ? gSpheres[hitIndex].reflectivity : 0.0f;
+        reflectivity = (hitIndex >= 0) ? spheres[hitIndex].reflectivity : 0.0f;
         if (reflectivity > 0.0f) {
             CgeVec3fReflect(direction, normal, reflectDir);
             CgeVec3fScale(reflectDir, 0.001f, offset);
@@ -187,7 +187,7 @@ int main() {
             direction[1] = v;
             direction[2] = -fov;
             CgeVec3fNormal(direction, direction);
-            traceColor(gOrigin, direction, color, 0);
+            traceColor(origin, direction, color, 0);
 
             if (color[0] < 0.0f) color[0] = 0.0f; else if (color[0] > 1.0f) color[0] = 1.0f;
             if (color[1] < 0.0f) color[1] = 0.0f; else if (color[1] > 1.0f) color[1] = 1.0f;
