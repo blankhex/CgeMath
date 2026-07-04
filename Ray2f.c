@@ -1,5 +1,4 @@
 #include "CgeMath.h"
-#include <string.h>
 #include <math.h>
 
 #define EPSILON 0.00001f
@@ -10,15 +9,12 @@ int CgeRay2fIntersectLine(const float start[2], const float direction[2],
     float tmp1[2];
     float denom, time;
 
-    /* Calculate intersection time */
     denom = CgeVec2fDot(direction, line);
     time = (line[2] - CgeVec2fDot(line, start)) / denom;
 
-    /* Check for ray/plane parallel to each other or point is behing the ray. */
     if (fabsf(denom) < EPSILON || time < 0.0f)
         return 0;
 
-    /* Compute intersection point */
     CgeVec2fScale(direction, time, tmp1);
     CgeVec2fAdd(start, tmp1, out);
     *t = time;
@@ -31,7 +27,6 @@ int CgeRay2fIntersectTime(const float aStart[2], const float aDirection[2],
     float tmp1[2], tmp2[2], tmp3[2];
     float denom;
 
-    /* Rotate directions by 90 degrees and caluclate denom */
     tmp1[0] = -aDirection[1]; tmp1[1] = aDirection[0];
     tmp2[0] = -bDirection[1]; tmp2[1] = bDirection[0];
     denom = CgeVec2fDot(tmp1, bDirection);
@@ -39,7 +34,6 @@ int CgeRay2fIntersectTime(const float aStart[2], const float aDirection[2],
     if (fabsf(denom) < EPSILON)
         return 0;
 
-    /* Calculate segments offset and intersection times */
     CgeVec2fSub(aStart, bStart, tmp3);
     *time1 = CgeVec2fDot(tmp3, tmp2) / denom;
     *time2 = CgeVec2fDot(tmp3, tmp1) / denom;
@@ -89,16 +83,13 @@ int CgeSegment2fIntersectLine(const float start[2], const float end[2],
     float tmp[2];
     float denom, time;
 
-    /* Calculate intersection time */
     CgeVec2fSub(end, start, tmp);
     denom = CgeVec2fDot(tmp, line);
     time = (line[2] - CgeVec2fDot(line, start)) / denom;
 
-    /* Check for ray/plane parallel to each other or point is behing the ray. */
     if (fabsf(denom) < EPSILON || time < 0.0f || time > 1.0f)
         return 0;
 
-    /* Compute intersection point */
     CgeVec2fScale(tmp, time, tmp);
     CgeVec2fAdd(start, tmp, out);
     *t = time;
@@ -134,7 +125,6 @@ int CgeRay2fIntersectBox2f(const float aStart[2], const float aDirection[2],
     timeNear = -1.0f / 0.0f;
     timeFar  =  1.0f / 0.0f;
 
-    /* Check each axis for the minimal and maximum intersection time */
     for (i = 0; i < 2; i++) {
         if (fabsf(aDirection[i]) < EPSILON) {
             if (aStart[i] < bMin[i] || aStart[i] > bMax[i])
