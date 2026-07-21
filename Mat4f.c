@@ -156,6 +156,20 @@ int CgeMat4fInverse(const float in[16], float out[16]) {
     return 1;
 }
 
+void CgeMat4fInverseRigid(const float in[16], float out[16]) {
+    float tmp[16];
+
+    CgeMat4fIdentity(tmp);
+    tmp[0] = in[0]; tmp[1] = in[4]; tmp[2] = in[8];
+    tmp[4] = in[1]; tmp[5] = in[5]; tmp[6] = in[9];
+    tmp[8] = in[2]; tmp[9] = in[6]; tmp[10] = in[10];
+
+    tmp[12] = -(in[12] * tmp[0] + in[13] * tmp[4] + in[14] * tmp[8]);
+    tmp[13] = -(in[12] * tmp[1] + in[13] * tmp[5] + in[14] * tmp[9]);
+    tmp[14] = -(in[12] * tmp[2] + in[13] * tmp[6] + in[14] * tmp[10]);
+    memcpy(out, tmp, sizeof(tmp));
+}
+
 void CgeMat4fFromScale(float x, float y, float z, float out[16]) {
     CgeMat4fIdentity(out);
     out[0] = x;

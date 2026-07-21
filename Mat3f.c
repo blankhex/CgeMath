@@ -83,7 +83,7 @@ float CgeMat3fDet(const float in[9]) {
 
 int CgeMat3fInverse(const float in[9], float out[9]) {
     float a, b, c, det;
-    float tmp[16];
+    float tmp[9];
 
     a = in[4] * in[8] - in[7] * in[5];
     b = in[1] * in[8] - in[7] * in[2];
@@ -119,6 +119,18 @@ int CgeMat3fInverse(const float in[9], float out[9]) {
 
     CgeMat3fScale(tmp, 1.0f / det, out);
     return 1;
+}
+
+void CgeMat3fInverseRigid(const float in[9], float out[9]) {
+    float tmp[9];
+
+    CgeMat3fIdentity(tmp);
+    tmp[0] = in[0]; tmp[1] = in[3];
+    tmp[3] = in[1]; tmp[4] = in[4];
+    tmp[6] = -(in[6] * tmp[0] + in[7] * tmp[3]);
+    tmp[7] = -(in[6] * tmp[1] + in[7] * tmp[4]);
+
+    memcpy(out, tmp, sizeof(tmp));
 }
 
 void CgeMat3fFromScale(float x, float y, float out[9]) {
