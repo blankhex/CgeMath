@@ -1,6 +1,10 @@
 #ifndef CGE_MATH_H
 #define CGE_MATH_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 
 void CgeBox2fUnion(const float aMin[2], const float aMax[2],
@@ -261,5 +265,9 @@ void CgeVec4iMin(const int a[4], const int b[4], int out[4]);
 void CgeVec4iMax(const int a[4], const int b[4], int out[4]);
 void CgeVec4iClamp(const int in[4], int minVal, int maxVal, int out[4]);
 void CgeVec4iAbs(const int in[4], int out[4]);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CGE_MATH_H */
